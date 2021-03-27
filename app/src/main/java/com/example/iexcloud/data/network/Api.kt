@@ -17,7 +17,7 @@ interface Api {
         operator fun invoke(): Api{
             val logging = HttpLoggingInterceptor()
 
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+            logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
             val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(logging).build()
 
             return Retrofit.Builder()

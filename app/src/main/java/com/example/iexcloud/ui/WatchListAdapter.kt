@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iexcloud.data.network.response.IEXResponse
+import com.example.iexcloud.data.room.StockEntity
 import com.example.iexcloud.databinding.WatchlistItemLayoutBinding
 
-class WatchListAdapter(var dataset: List<IEXResponse>) : RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>(){
+class WatchListAdapter(var dataset: List<StockEntity>) : RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>(){
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WatchListViewHolder {
@@ -30,7 +31,7 @@ class WatchListAdapter(var dataset: List<IEXResponse>) : RecyclerView.Adapter<Wa
         private val askPrice: TextView = binding.askPrice
         private val lastPrice: TextView = binding.lastPrice
 
-        fun onBind(data: IEXResponse){
+        fun onBind(data: StockEntity){
             stockSymbol.text = data.symbol
             bidPrice.text = data.iexBidPrice.toString()
             askPrice.text = data.iexAskPrice.toString()

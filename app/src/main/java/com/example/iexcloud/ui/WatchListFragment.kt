@@ -1,5 +1,6 @@
 package com.example.iexcloud.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,16 +9,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iexcloud.R
-import com.example.iexcloud.data.network.response.IEXResponse
+import com.example.iexcloud.data.room.StockEntity
 import com.example.iexcloud.viewmodel.MainActivityViewModel
 
-class WatchListFragment : Fragment() {
+class WatchListFragment : Fragment(), WatchListAdapter.StockClick {
     private lateinit var recyclerView: RecyclerView
-    private val watchListAdapter: WatchListAdapter = WatchListAdapter(mutableListOf())
+    private lateinit var activityHost: MainActivity
+    private val watchListAdapter: WatchListAdapter = WatchListAdapter(mutableListOf(),this)
     private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity)
+            activityHost = context
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,11 +41,16 @@ class WatchListFragment : Fragment() {
         recyclerView.adapter = watchListAdapter
 
         //Live data setup
-        Log.d("Fragment", "updating...")
         mainActivityViewModel.readAllData.observe(viewLifecycleOwner, Observer {
-            Log.d("Fragment", it[0].symbol)
             watchListAdapter.dataset = it
             watchListAdapter.notifyDataSetChanged()
         })
+
     }
+
+    override fun getInfo(data: StockEntity) {
+        activityHost.inflateDetailedView(data)
+    }
+
+
 }

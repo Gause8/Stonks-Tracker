@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.iexcloud.viewmodel.MainActivityViewModel" />
+        <variable
+            name="detailFragment"
+            type="com.example.iexcloud.ui.StockDetailFragment" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.MainActivity">
+
+        <TextView
+            android:id="@+id/name_stock_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Stock Symbol:"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:id="@+id/stock_symbol"
+            android:text="AAA"
+            app:layout_constraintStart_toEndOf="@id/name_stock_symbol"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/name_bid_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Bid Price:"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stock_symbol" />
+
+        <TextView
+            android:id="@+id/bid_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="50"
+            app:layout_constraintStart_toEndOf="@id/name_bid_price"
+            app:layout_constraintTop_toBottomOf="@+id/stock_symbol" />
+
+        <TextView
+            android:id="@+id/name_ask_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Ask Price:"
+            app:layout_constraintStart_toEndOf="@id/bid_price"
+            app:layout_constraintTop_toBottomOf="@+id/stock_symbol" />
+
+        <TextView
+            android:id="@+id/ask_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="51"
+            app:layout_constraintStart_toEndOf="@id/name_ask_price"
+            app:layout_constraintTop_toBottomOf="@+id/stock_symbol" />
+
+        <TextView
+            android:id="@+id/name_last_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Last Price:"
+            app:layout_constraintStart_toEndOf="@id/ask_price"
+            app:layout_constraintTop_toBottomOf="@+id/stock_symbol" />
+
+        <TextView
+            android:id="@+id/last_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="49"
+            app:layout_constraintStart_toEndOf="@id/name_last_price"
+            app:layout_constraintTop_toBottomOf="@+id/stock_symbol" />
+
+<!--        <ImageView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/name_ask_price"-->
+<!--            android:src="@drawable/stonks"-->
+<!--            />-->
+        <com.github.mikephil.charting.charts.CandleStickChart
+            android:id="@+id/candle_stick_chart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name_bid_price"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

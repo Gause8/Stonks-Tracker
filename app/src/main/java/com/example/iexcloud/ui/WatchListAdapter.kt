@@ -8,8 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.iexcloud.data.network.response.IEXResponse
 import com.example.iexcloud.data.room.StockEntity
 import com.example.iexcloud.databinding.WatchlistItemLayoutBinding
+import com.google.android.material.snackbar.Snackbar
 
-class WatchListAdapter(var dataset: List<StockEntity>) : RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>(){
+class WatchListAdapter(var dataset: List<StockEntity>, val stockClick: StockClick) : RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>(){
+
+    interface StockClick{
+        fun getInfo(data: StockEntity)
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WatchListViewHolder {
@@ -32,6 +37,10 @@ class WatchListAdapter(var dataset: List<StockEntity>) : RecyclerView.Adapter<Wa
         private val lastPrice: TextView = binding.lastPrice
 
         fun onBind(data: StockEntity){
+            binding.root.setOnClickListener {
+                stockClick.getInfo(data)
+            }
+
             stockSymbol.text = data.symbol
             bidPrice.text = data.iexBidPrice.toString()
             askPrice.text = data.iexAskPrice.toString()

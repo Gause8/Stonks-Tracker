@@ -38,6 +38,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -88,4 +89,8 @@ dependencies {
     //Kodein DI
     implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
     implementation "org.kodein.di:kodein-di-framework-android-x:$kodein_version"
+
+    //Charts
+//        implementation 'com.github.PhilJay:MPAndroidChart-Realm:v3.1.0@aar'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

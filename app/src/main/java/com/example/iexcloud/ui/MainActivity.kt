@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), MainListener {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainActivityViewModel by viewModels<MainActivityViewModel>()
     private val watchListFragment: WatchListFragment = WatchListFragment()
-    private val stockList = ArrayList<IEXResponse>()
+    private val detailFragment: StockDetailFragment = StockDetailFragment()
     private var isFabVis = false
 
 
@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity(), MainListener {
         binding.viewmodel?.getStock("GOOG")
         binding.viewmodel?.getStock("AAPL")
         viewModel.getStock("MSFT")
+        binding.viewmodel?.getChart("GME")
 
         fab.setOnClickListener {
             if (isFabVis)
@@ -109,6 +110,17 @@ class MainActivity : AppCompatActivity(), MainListener {
                             //TODO exit out dialog
                         })
         builder.create().show()
+    }
+
+    fun inflateDetailedView(dataItem: StockEntity) {
+        viewModel.setDetailStock(dataItem)
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.frame_container,detailFragment)
+                .addToBackStack(null)
+                .commit()
+
+
     }
 
 }

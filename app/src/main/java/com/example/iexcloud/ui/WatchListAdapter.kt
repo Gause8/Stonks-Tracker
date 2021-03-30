@@ -14,6 +14,7 @@ class WatchListAdapter(var dataset: List<StockEntity>, val stockClick: StockClic
 
     interface StockClick{
         fun getInfo(data: StockEntity)
+        fun deleteInfo(data: StockEntity)
     }
 
 
@@ -39,6 +40,10 @@ class WatchListAdapter(var dataset: List<StockEntity>, val stockClick: StockClic
         fun onBind(data: StockEntity){
             binding.root.setOnClickListener {
                 stockClick.getInfo(data)
+            }
+            binding.root.setOnLongClickListener {
+                stockClick.deleteInfo(data)
+                true
             }
 
             stockSymbol.text = data.symbol

@@ -1,7 +1,9 @@
 package com.example.iexcloud.data.room
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.iexcloud.data.network.response.IEXChartResponse
 
 @Entity(tableName = "Watchlist")
 data class StockEntity(
@@ -39,5 +41,7 @@ data class StockEntity(
         val symbol: String,
         val week52High: Double,
         val week52Low: Double,
-        val ytdChange: Double
+        val ytdChange: Double,
+        @ColumnInfo(name = "WatchlistName")
+        val watchlistName: String
 )

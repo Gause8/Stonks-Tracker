@@ -1,6 +1,7 @@
 package com.example.iexcloud.data.repositories
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.iexcloud.data.network.Api
 import com.example.iexcloud.data.network.response.IEXChartResponse
@@ -18,14 +19,23 @@ class IEXRepository(private val watchlistDao: WatchlistDao) {
     suspend fun getChartInfo(symbol: String): Response<IEXChartResponse>{
         return Api().getChartInfo(symbol)
     }
-    suspend fun addStock(stock: IEXResponse){
-        watchlistDao.insertStockEntitiy(Convert.responseToEntity(stock))
+    suspend fun addStock(stock: StockEntity){
+        watchlistDao.insertStockEntitiy(stock)
     }
 
     fun readAllData(): LiveData<List<StockEntity>>{
+        Log.d("REPOSITORY", "reading data")
         return watchlistDao.getAll()
     }
     suspend fun getSymbol(symbol: String): StockEntity{
         return watchlistDao.getSymbol(symbol)
     }
+    suspend fun delete(stockEntity: StockEntity){
+        watchlistDao.delete(stockEntity)
+    }
+
+     fun getWatchList(watchList: String): LiveData<List<StockEntity>>
+            = watchlistDao.getWatchList(watchList)
+
+     fun getNamedWatchlist():List<String> = watchlistDao.getNamedWatchList()
 }

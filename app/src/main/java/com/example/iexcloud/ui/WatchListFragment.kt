@@ -41,7 +41,7 @@ class WatchListFragment : Fragment(), WatchListAdapter.StockClick {
         recyclerView.adapter = watchListAdapter
 
         //Live data setup
-        mainActivityViewModel.readAllData.observe(viewLifecycleOwner, Observer {
+        mainActivityViewModel.watchListData.observe(viewLifecycleOwner, Observer {
             watchListAdapter.dataset = it
             watchListAdapter.notifyDataSetChanged()
         })
@@ -50,6 +50,11 @@ class WatchListFragment : Fragment(), WatchListAdapter.StockClick {
 
     override fun getInfo(data: StockEntity) {
         activityHost.inflateDetailedView(data)
+    }
+
+    override fun deleteInfo(data: StockEntity) {
+        //TODO maybe add a alert dialog. to confirm delete
+        mainActivityViewModel.deleteStock(data)
     }
 
 

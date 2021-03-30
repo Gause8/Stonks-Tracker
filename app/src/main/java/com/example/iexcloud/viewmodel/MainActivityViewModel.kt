@@ -11,8 +11,9 @@ import com.example.iexcloud.data.room.StockEntity
 import com.example.iexcloud.data.room.WatchlistDB
 import com.example.iexcloud.data.room.WatchlistDao
 import com.example.iexcloud.ui.MainListener
+import com.example.iexcloud.util.Convert
 import com.example.iexcloud.util.Coroutines
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.util.ArrayList
 
 private const val TAG = "MainActivityViewModel"
@@ -20,7 +21,9 @@ private const val TAG = "MainActivityViewModel"
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
     var mainListener: MainListener? = null
     private val repository: IEXRepository
-    val readAllData: LiveData<List<StockEntity>>
+    private val readAllData: LiveData<List<StockEntity>>
+    //val namedList: List<String>
+    var watchListData: LiveData<List<StockEntity>>
     private val watchlistDao: WatchlistDao
     var chartResponse: IEXChartResponse = IEXChartResponse()
 
@@ -32,14 +35,14 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
 
 
-    fun getStock(symbol: String){
+    fun getStock(symbol: String,watchListName: String){
         Log.d(TAG, "Getting Info")
         Coroutines.io {
             val response =  repository.getStockInfo(symbol)
-//            val sym = repository.getSymbol(response.body()?.symbol!!)
             if (response.isSuccessful){
                 Log.d(TAG, response.body()?.symbol!!)
-                repository.addStock(response.body()!!)
+                val temp = Convert.responseToEntity(response.body()!!, watchListName)
+                repository.addStock(temp)
             }
 
         }
@@ -48,11 +51,10 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     fun setDetailStock(stock: StockEntity){
         _detailStock.value = stock
-        Log.d(TAG, "setting stock detail:  ${stock.symbol}")
+
     }
 
-    fun getChart(symbol: String): IEXChartResponse{
-         Coroutines.io {
+    suspend fun getChart(symbol: String): IEXChartResponse{
             val response = repository.getChartInfo(symbol)
              chartResponse = response.body()!!
             if (response.isSuccessful){
@@ -60,8 +62,21 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                    chartStock.value?.add(item)
                 }
             }
-        }
         return chartResponse
+    }
+
+    fun deleteStock(stock: StockEntity){
+        Coroutines.io {
+            repository.delete(stock)
+        }
+    }
+    fun getWatchlist(watchListName: String){
+
+        watchListData = repository.getWatchList(watchListName)
+
+    }
+    fun getWatchlistNames(): List<String>{
+        return repository.getNamedWatchlist()
     }
 
 
@@ -69,7 +84,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         watchlistDao = WatchlistDB.getWatchListDatabase(application).getWatchListDao()
         repository = IEXRepository(watchlistDao)
         readAllData = repository.readAllData()
-
+        watchListData = repository.getWatchList("My first list")
     }
 
 }

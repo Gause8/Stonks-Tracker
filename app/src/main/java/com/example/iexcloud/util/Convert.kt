@@ -15,7 +15,7 @@ object Convert {
                 stock.marketCap,stock.openSource,stock.previousClose,stock.previousVolume,
                 stock.primaryExchange,stock.symbol,stock.week52High,stock.week52Low,stock.ytdChange)
 
-    fun responseToEntity(stock: IEXResponse):StockEntity
+    fun responseToEntity(stock: IEXResponse, watchListName: String):StockEntity
         = StockEntity(stock.avgTotalVolume,
                 stock.calculationPrice,stock.change,stock.changePercent,stock.closeSource,
                 stock.companyName,stock.iexAskPrice,stock.iexAskSize,stock.iexBidPrice,
@@ -24,6 +24,7 @@ object Convert {
                 stock.iexRealtimeSize,stock.iexVolume,stock.isUSMarketOpen,stock.lastTradeTime,
                 stock.latestPrice,stock.latestSource,stock.latestTime,stock.latestUpdate,
                 stock.marketCap,stock.openSource,stock.previousClose,stock.previousVolume,
-                stock.primaryExchange,stock.symbol,stock.week52High,stock.week52Low,stock.ytdChange)
+                stock.primaryExchange,stock.symbol,stock.week52High,stock.week52Low,stock.ytdChange,
+                watchListName)
 
 }

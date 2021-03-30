@@ -100,7 +100,7 @@
         <com.github.mikephil.charting.charts.CandleStickChart
             android:id="@+id/candle_stick_chart"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="500dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name_bid_price"
             app:layout_constraintBottom_toBottomOf="parent"

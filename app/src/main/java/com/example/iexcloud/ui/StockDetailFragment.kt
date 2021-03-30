@@ -1,6 +1,8 @@
 package com.example.iexcloud.ui
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,18 +16,21 @@ import com.example.iexcloud.R
 import com.example.iexcloud.data.network.response.IEXChartResponse
 import com.example.iexcloud.data.room.StockEntity
 import com.example.iexcloud.databinding.StockDetailFragmentBinding
+import com.example.iexcloud.util.Coroutines
 import com.example.iexcloud.viewmodel.MainActivityViewModel
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.data.CandleData
 import com.github.mikephil.charting.data.CandleDataSet
 import com.github.mikephil.charting.data.CandleEntry
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import java.util.ArrayList
 
 class StockDetailFragment: Fragment() {
 
     private lateinit var binding: StockDetailFragmentBinding
     private val mainViewModel: MainActivityViewModel by activityViewModels()
+    private lateinit var data: IEXChartResponse
+    lateinit var dataLoad: Deferred<IEXChartResponse>
 
 
     override fun onCreateView(
@@ -35,15 +40,22 @@ class StockDetailFragment: Fragment() {
     ): View? {
         val fragmentBinding = StockDetailFragmentBinding.inflate(inflater,container,false)
         binding = fragmentBinding
-        mainViewModel.getStock("GME")
 
+        dataLoad = GlobalScope.async(Dispatchers.Default) {
+            val sym: String= mainViewModel?.detailStock?.value?.symbol!!
+            mainViewModel?.getChart(sym)
+        }
         return fragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val chartData: IEXChartResponse =  mainViewModel?.getChart(binding.stockSymbol.toString())
+        GlobalScope.launch(Dispatchers.Default){
+            data = dataLoad.await()
+            candleStick(data)
+        }
+
         binding.apply {
             mainViewModel?.detailStock?.observe(viewLifecycleOwner, Observer {
                 binding.stockSymbol.text = it.symbol
@@ -52,23 +64,17 @@ class StockDetailFragment: Fragment() {
                 binding.lastPrice.text = it.lastTradeTime.toString()
 
             })
-            mainViewModel.chartStock.observe(viewLifecycleOwner, Observer {
-                candleStick(it)
-            })
-            //candleStick(viewmodel?.chartResponse!!)
         }
 
     }
     private fun candleStick(chartData: IEXChartResponse) {
-
-
+        Log.d("StockDetailFragmanet", "candle stick")
         var candleStickList = ArrayList<CandleEntry>()
         if (chartData.size == 0){
             Log.d("StockDetailFragmanet", "chart is zero")
         }
         var i: Float = 0F
         for (item in chartData) {
-            Log.d("StockDetailFragment", "getting chart info: ${item.open}")
             candleStickList.add(
                 CandleEntry(
                     i,
@@ -78,9 +84,19 @@ class StockDetailFragment: Fragment() {
                     item.close.toFloat()
                 )
             )
+            if(i == 30F)
+                break
             i++
         }
-        val candleData: CandleDataSet = CandleDataSet(candleStickList, "DataSet1")
+        val candleData: CandleDataSet = CandleDataSet(candleStickList, chartData[0].symbol)
+        candleData.color = Color.rgb(80,80,80)
+        candleData.shadowColorSameAsCandle = true
+        candleData.shadowWidth = 0.8F
+        candleData.decreasingColor = resources.getColor(R.color.red)
+        candleData.decreasingPaintStyle = Paint.Style.FILL
+        candleData.increasingColor = resources.getColor(R.color.green)
+        candleData.increasingPaintStyle = Paint.Style.FILL
+        candleData.setDrawValues(false)
         binding.candleStickChart.data = CandleData(candleData)
         binding.candleStickChart.invalidate()
     }

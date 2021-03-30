@@ -18,4 +18,10 @@ interface WatchlistDao {
     @Query("SELECT * FROM Watchlist WHERE symbol= :sym")
     suspend fun getSymbol(sym: String): StockEntity
 
+    @Query("SELECT * FROM Watchlist WHERE watchlistName = :watchlist")
+    fun getWatchList(watchlist: String): LiveData<List<StockEntity>>
+
+    @Query("SELECT WatchlistName FROM Watchlist")
+    fun getNamedWatchList(): List<String>
+
 }

@@ -28,10 +28,11 @@ interface Api {
         operator fun invoke(): Api{
             val logging = HttpLoggingInterceptor()
 
-            logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(logging).build()
 
             return Retrofit.Builder()
+                    //using the sandbox api
                 .baseUrl("https://sandbox.iexapis.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)

@@ -13,18 +13,21 @@ import com.example.iexcloud.data.room.WatchlistDao
 import com.example.iexcloud.ui.MainListener
 import com.example.iexcloud.util.Convert
 import com.example.iexcloud.util.Coroutines
+import kotlinx.coroutines.delay
 
 
 private const val TAG = "MainActivityViewModel"
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
+    var mainListener: MainListener? = null
     private val repository: IEXRepository
     private val readAllData: LiveData<List<StockEntity>>
-    private val watchlistDao: WatchlistDao
     private val _detailStock = MutableLiveData<StockEntity>()
+    private val _chartStock = MutableLiveData<IEXChartResponse>()
+    private val watchlistDao: WatchlistDao
     val detailStock: LiveData<StockEntity> = _detailStock
+    val chartStock: LiveData<IEXChartResponse> = _chartStock
     var watchListData: LiveData<List<StockEntity>>
-    var mainListener: MainListener? = null
     var chartResponse: IEXChartResponse = IEXChartResponse()
 
 
@@ -35,12 +38,15 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     //TODO cant have the same stock in a different watchlist
     fun addStock(symbol: String, watchListName: String){
         Coroutines.io {
-            //network call to get the stock
-            val response =  repository.getStockInfo(symbol)
-            if (response.isSuccessful){
-                //converting it to entity to add it to database
-                val temp = Convert.responseToEntity(response.body()!!, watchListName)
-                repository.addStock(temp)
+            while (true) {// quick way to refresh every call every 5 seconds
+                //network call to get the stock
+                val response = repository.getStockInfo(symbol)
+                if (response.isSuccessful) {
+                    //converting it to entity to add it to database
+                    val temp = Convert.responseToEntity(response.body()!!, watchListName)
+                    repository.addStock(temp)
+                }
+                delay(5000)
             }
 
         }
@@ -51,6 +57,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     * getting the stock data for the detail fragment
     * */
     fun setDetailStock(stock: StockEntity){
+        //TODO change to live data to update the detail fragment
         _detailStock.value = stock
 
     }

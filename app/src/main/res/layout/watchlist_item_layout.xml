@@ -37,10 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/tv_bid_price"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/stock_symbol"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintStart_toEndOf="@+id/stock_symbol"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/bid_price"
@@ -49,19 +47,17 @@
             android:layout_margin="16dp"
             android:text=""
             app:layout_constraintStart_toEndOf="@id/name_bid_price"
-            app:layout_constraintTop_toBottomOf="@+id/stock_symbol"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/name_ask_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/tv_ask_price"
-            app:layout_constraintStart_toEndOf="@id/bid_price"
-            app:layout_constraintTop_toBottomOf="@+id/stock_symbol"
             app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stock_symbol" />
         <TextView
             android:id="@+id/ask_price"
             android:layout_width="wrap_content"

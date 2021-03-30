@@ -40,18 +40,22 @@ class WatchListFragment : Fragment(), WatchListAdapter.StockClick {
         recyclerView = view.findViewById(R.id.watchlist_rv) //TODO change to view binding
         recyclerView.adapter = watchListAdapter
 
-        //Live data setup
+        //Live data setup  to keep an eye on the watchlist so you can add data to recycler view
         mainActivityViewModel.watchListData.observe(viewLifecycleOwner, Observer {
             watchListAdapter.dataset = it
             watchListAdapter.notifyDataSetChanged()
         })
 
     }
-
+    /*
+    * when an item is clicked this will get the stock info for the detailed view
+    * */
     override fun getInfo(data: StockEntity) {
         activityHost.inflateDetailedView(data)
     }
-
+    /*
+    * whenever a long click happens on a stock a stock will get deleted
+    * */
     override fun deleteInfo(data: StockEntity) {
         //TODO maybe add a alert dialog. to confirm delete
         mainActivityViewModel.deleteStock(data)

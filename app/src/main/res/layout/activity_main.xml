@@ -35,7 +35,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_margin="20dp"
-            />
+            android:focusable="true"
+            android:contentDescription="@string/cd_add_a_stock_to_the_watchlist" />
 
 
 

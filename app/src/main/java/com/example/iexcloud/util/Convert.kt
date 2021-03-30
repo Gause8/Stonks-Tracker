@@ -15,6 +15,9 @@ object Convert {
                 stock.marketCap,stock.openSource,stock.previousClose,stock.previousVolume,
                 stock.primaryExchange,stock.symbol,stock.week52High,stock.week52Low,stock.ytdChange)
 
+    /*
+    * convert the api response to a entity for the DB
+    * */
     fun responseToEntity(stock: IEXResponse, watchListName: String):StockEntity
         = StockEntity(stock.avgTotalVolume,
                 stock.calculationPrice,stock.change,stock.changePercent,stock.closeSource,

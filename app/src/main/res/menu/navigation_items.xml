@@ -5,11 +5,11 @@
     >
 
     <item
-        android:title="My first list"
+        android:id="@+id/menu_add"
+        android:title="@string/add_watchlist"
+        android:icon="@android:drawable/ic_input_add"
         />
     <item
-        android:id="@+id/menu_add"
-        android:title="Add Watchlist"
-        android:icon="@android:drawable/ic_input_add"
+        android:title="@string/my_first_list"
         />
 </menu>

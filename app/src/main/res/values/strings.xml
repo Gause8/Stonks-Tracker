@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">IEX Cloud</string>
+    <string name="my_first_list">My first list</string>
+    <string name="add_watchlist">Add Watchlist</string>
+    <string name="cd_add_a_stock_to_the_watchlist">Add a stock to the watchlist</string>
+    <string name="tv_last_price">Last Price:</string>
+    <string name="tv_ask_price">Ask Price:</string>
+    <string name="tv_bid_price">Bid Price:</string>
+    <string name="tv_stock_symbol">Stock Symbol:</string>
 </resources>

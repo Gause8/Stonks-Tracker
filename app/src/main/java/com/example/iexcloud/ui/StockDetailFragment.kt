@@ -41,6 +41,10 @@ class StockDetailFragment: Fragment() {
         val fragmentBinding = StockDetailFragmentBinding.inflate(inflater,container,false)
         binding = fragmentBinding
 
+        /*
+        * the chart info wasnt ready to be displayed so this waits for the
+        * info to get loaded
+        * */
         dataLoad = GlobalScope.async(Dispatchers.Default) {
             val sym: String= mainViewModel?.detailStock?.value?.symbol!!
             mainViewModel?.getChart(sym)
@@ -50,12 +54,12 @@ class StockDetailFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        //when info is loaded the chart will be displayed
         GlobalScope.launch(Dispatchers.Default){
             data = dataLoad.await()
             candleStick(data)
         }
-
+        //view binding stuff to changed the info on the view
         binding.apply {
             mainViewModel?.detailStock?.observe(viewLifecycleOwner, Observer {
                 binding.stockSymbol.text = it.symbol
@@ -67,12 +71,12 @@ class StockDetailFragment: Fragment() {
         }
 
     }
+    /*
+    * to display the candle stick chart
+    * */
     private fun candleStick(chartData: IEXChartResponse) {
-        Log.d("StockDetailFragmanet", "candle stick")
+        //creating a list for the info for the chart
         var candleStickList = ArrayList<CandleEntry>()
-        if (chartData.size == 0){
-            Log.d("StockDetailFragmanet", "chart is zero")
-        }
         var i: Float = 0F
         for (item in chartData) {
             candleStickList.add(
@@ -84,10 +88,12 @@ class StockDetailFragment: Fragment() {
                     item.close.toFloat()
                 )
             )
+            //stoping at 30 because the response gets more then 30 entries
             if(i == 30F)
                 break
             i++
         }
+        //setting properties for the chart
         val candleData: CandleDataSet = CandleDataSet(candleStickList, chartData[0].symbol)
         candleData.color = Color.rgb(80,80,80)
         candleData.shadowColorSameAsCandle = true

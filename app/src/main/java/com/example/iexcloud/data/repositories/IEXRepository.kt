@@ -13,29 +13,50 @@ import retrofit2.Response
 
 class IEXRepository(private val watchlistDao: WatchlistDao) {
 
+    /*
+    * getting the stock info based on the symbol
+    * */
     suspend fun getStockInfo(name: String): Response<IEXResponse>{
         return Api().getStockInfo(name)
     }
+    /*
+    * getting the chart info based on the symbol
+    * */
     suspend fun getChartInfo(symbol: String): Response<IEXChartResponse>{
         return Api().getChartInfo(symbol)
     }
+    /*
+    * adding a stock to the DB
+    * */
     suspend fun addStock(stock: StockEntity){
         watchlistDao.insertStockEntitiy(stock)
     }
-
+    /*
+    * reading all the data from DB
+    * */
     fun readAllData(): LiveData<List<StockEntity>>{
-        Log.d("REPOSITORY", "reading data")
         return watchlistDao.getAll()
     }
+    /*
+    * getting a stock by its symbol
+    * */
     suspend fun getSymbol(symbol: String): StockEntity{
         return watchlistDao.getSymbol(symbol)
     }
+    /*
+    * deleting a stock from the DB
+    * */
     suspend fun delete(stockEntity: StockEntity){
         watchlistDao.delete(stockEntity)
     }
-
+    /*
+    * getting stocks on a certian watchlist
+    * */
      fun getWatchList(watchList: String): LiveData<List<StockEntity>>
             = watchlistDao.getWatchList(watchList)
 
+    /*
+    * getting the name of all the watchlists
+    * */
      fun getNamedWatchlist():List<String> = watchlistDao.getNamedWatchList()
 }

@@ -8,6 +8,9 @@ import androidx.room.migration.Migration
 
 @Database(entities = [StockEntity::class], version = 1)
 abstract class WatchlistDB: RoomDatabase() {
+    /*
+    * Setting up Room DB
+    * */
 
     abstract fun getWatchListDao(): WatchlistDao
 

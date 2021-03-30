@@ -4,27 +4,15 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.widget.EditText
 import androidx.activity.viewModels
-import androidx.core.view.children
-import androidx.core.view.contains
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import com.example.iexcloud.R
-import com.example.iexcloud.data.network.response.IEXResponse
 import com.example.iexcloud.data.room.StockEntity
 import com.example.iexcloud.databinding.ActivityMainBinding
-import com.example.iexcloud.util.Convert
 import com.example.iexcloud.viewmodel.MainActivityViewModel
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 
@@ -43,7 +31,7 @@ class MainActivity : AppCompatActivity(), MainListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        //setting up view binding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         viewModel.mainListener = this
         binding.viewmodel = viewModel
@@ -51,14 +39,18 @@ class MainActivity : AppCompatActivity(), MainListener {
 
 
         inflateWatchlistFragment()
-        viewModel.getStock("GOOG","My first list")
-        viewModel.getStock("AAPL","My first list")
-        viewModel.getStock("MSFT","My first list")
 
+        //adding the 3 main stocks to the default list
+        //TODO check in the database to see if it has info in it
+        viewModel.addStock("GOOG","My first list")
+        viewModel.addStock("AAPL","My first list")
+        viewModel.addStock("MSFT","My first list")
 
+        //setting a click listener for add stock feature
         fab.setOnClickListener {
             showAlertDialog("Stock Symbol")
         }
+        //getting the names of the watchlist to pass them to the menu
         watchlistLoad = GlobalScope.async(Dispatchers.Default){
             viewModel.getWatchlistNames()
         }
@@ -66,7 +58,8 @@ class MainActivity : AppCompatActivity(), MainListener {
 
 
     }
-
+/*
+* inflate the main watchlist fragment*/
     private fun inflateWatchlistFragment(){
         supportFragmentManager
             .beginTransaction()
@@ -78,7 +71,7 @@ class MainActivity : AppCompatActivity(), MainListener {
     }
 
     /*
-    * shows the dialog box when adding the stock
+    * shows the dialog box when adding the stock or adding a watchlist
     * TODO add the auto complete
     * */
     private fun showAlertDialog(type: String){
@@ -88,15 +81,12 @@ class MainActivity : AppCompatActivity(), MainListener {
         val etSymbol = inflater.findViewById<EditText>(R.id.et_symbol)
         etSymbol.hint = type
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         builder.setView(inflater)
-                // Add action buttons
                 .setPositiveButton("ADD",
                         DialogInterface.OnClickListener { dialog, id ->
                             // checking if the stock symbol needs the alertDialog
                             if (etSymbol.text.toString() != "" && etSymbol.hint == "Stock Symbol")
-                                viewModel.getStock(etSymbol.text.toString(),watchlistLocation)
+                                viewModel.addStock(etSymbol.text.toString(),watchlistLocation)
                             //checking if the watchlist needs the alertDialog
                             if (etSymbol.hint == "Watchlist name")
                                 watchlistMenu.add(etSymbol.text.toString())
@@ -107,10 +97,12 @@ class MainActivity : AppCompatActivity(), MainListener {
                         })
         builder.create().show()
     }
-
+/*
+* inflating the detailed view
+* pass the stock you want the detailed view on
+* */
     fun inflateDetailedView(dataItem: StockEntity) {
         viewModel.setDetailStock(dataItem)
-        //binding.mainFab.visibility
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.frame_container,detailFragment)
@@ -121,6 +113,9 @@ class MainActivity : AppCompatActivity(), MainListener {
     }
 
 
+    /*
+    * creating the options menu for the watchlists
+    * */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         watchlistMenu = menu!!
         menuInflater.inflate(R.menu.navigation_items,menu)
@@ -138,15 +133,16 @@ class MainActivity : AppCompatActivity(), MainListener {
 
         return true
     }
-
-
-
+    /*
+    * when a item on the watchlist menu is selected
+    * */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //adding a watchlist to the menu
         if (item.title.toString() == "Add Watchlist"){
-            Snackbar.make(binding.root,"This is a simple Snackbar",Snackbar.LENGTH_LONG).show()
             showAlertDialog("Watchlist name")
         }
         else{
+            //changing the watchlist to the one selected
             viewModel.getWatchlist(item.title.toString())
             watchlistLocation = item.title.toString()
             //replacing the fragment to reload it

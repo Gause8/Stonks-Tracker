@@ -11,12 +11,17 @@ import com.example.iexcloud.databinding.WatchlistItemLayoutBinding
 import com.google.android.material.snackbar.Snackbar
 
 class WatchListAdapter(var dataset: List<StockEntity>, val stockClick: StockClick) : RecyclerView.Adapter<WatchListAdapter.WatchListViewHolder>(){
-
+    /*
+    * interface for the onclicks
+    * */
     interface StockClick{
         fun getInfo(data: StockEntity)
         fun deleteInfo(data: StockEntity)
     }
 
+    /*
+    * Adapter stuff for the recycler view
+    * */
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WatchListViewHolder {
         val binding = WatchlistItemLayoutBinding
@@ -38,6 +43,7 @@ class WatchListAdapter(var dataset: List<StockEntity>, val stockClick: StockClic
         private val lastPrice: TextView = binding.lastPrice
 
         fun onBind(data: StockEntity){
+            //click listeners for each item in the RV
             binding.root.setOnClickListener {
                 stockClick.getInfo(data)
             }

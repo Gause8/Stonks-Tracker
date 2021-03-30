@@ -11,12 +11,19 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface Api {
+    /*
+    * getting the stock info by the symbol
+    * */
     @GET("stable/stock/{symbol}/quote?token=Tpk_5b17f588439e43f487de638e708964df")
     suspend fun getStockInfo(@Path("symbol") symbol: String): Response<IEXResponse>
-
+    /*
+    * getting the chart info by the symbol
+    * */
     @GET("stable/stock/{symbol}/chart/3m?token=Tpk_5b17f588439e43f487de638e708964df")
     suspend fun getChartInfo(@Path("symbol") symbol: String):  Response<IEXChartResponse>
-
+    /*
+    * basic retrofit
+    * */
     companion object{
         operator fun invoke(): Api{
             val logging = HttpLoggingInterceptor()

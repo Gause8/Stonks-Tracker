@@ -13,34 +13,32 @@ import com.example.iexcloud.data.room.WatchlistDao
 import com.example.iexcloud.ui.MainListener
 import com.example.iexcloud.util.Convert
 import com.example.iexcloud.util.Coroutines
-import kotlinx.coroutines.*
-import java.util.ArrayList
+
 
 private const val TAG = "MainActivityViewModel"
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
-    var mainListener: MainListener? = null
     private val repository: IEXRepository
     private val readAllData: LiveData<List<StockEntity>>
-    //val namedList: List<String>
-    var watchListData: LiveData<List<StockEntity>>
     private val watchlistDao: WatchlistDao
-    var chartResponse: IEXChartResponse = IEXChartResponse()
-
     private val _detailStock = MutableLiveData<StockEntity>()
     val detailStock: LiveData<StockEntity> = _detailStock
+    var watchListData: LiveData<List<StockEntity>>
+    var mainListener: MainListener? = null
+    var chartResponse: IEXChartResponse = IEXChartResponse()
 
-    private val _chartStock = MutableLiveData<IEXChartResponse>()
-    val chartStock: LiveData<IEXChartResponse> = _chartStock
 
-
-
-    fun getStock(symbol: String,watchListName: String){
-        Log.d(TAG, "Getting Info")
+    /*
+    * inserting stock into database
+    * symbol = the stock symbol
+    * watchlistName = the name of the watchlist that it is added under*/
+    //TODO cant have the same stock in a different watchlist
+    fun addStock(symbol: String, watchListName: String){
         Coroutines.io {
+            //network call to get the stock
             val response =  repository.getStockInfo(symbol)
             if (response.isSuccessful){
-                Log.d(TAG, response.body()?.symbol!!)
+                //converting it to entity to add it to database
                 val temp = Convert.responseToEntity(response.body()!!, watchListName)
                 repository.addStock(temp)
             }
@@ -49,37 +47,48 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     }
 
+    /*
+    * getting the stock data for the detail fragment
+    * */
     fun setDetailStock(stock: StockEntity){
         _detailStock.value = stock
 
     }
-
+    /*
+    * getting the chart information for the detailed fragment
+    */
     suspend fun getChart(symbol: String): IEXChartResponse{
             val response = repository.getChartInfo(symbol)
              chartResponse = response.body()!!
-            if (response.isSuccessful){
-                for (item in response.body()!!){
-                   chartStock.value?.add(item)
-                }
-            }
         return chartResponse
     }
 
+    /*
+    * deleting a specific stock
+    * */
     fun deleteStock(stock: StockEntity){
         Coroutines.io {
             repository.delete(stock)
         }
     }
+    /*
+    * getting a specific watchlist from the db to display
+    * */
     fun getWatchlist(watchListName: String){
 
         watchListData = repository.getWatchList(watchListName)
 
     }
+    /*
+    * getting all the name off the watch list to display on the menu
+    * */
     fun getWatchlistNames(): List<String>{
         return repository.getNamedWatchlist()
     }
 
-
+    /*
+    * initializing all the basic stuff that is needed for the view model
+    * */
     init {
         watchlistDao = WatchlistDB.getWatchListDatabase(application).getWatchListDao()
         repository = IEXRepository(watchlistDao)
